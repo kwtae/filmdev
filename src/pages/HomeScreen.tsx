@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Recipe } from '../db/db';
 import { useNavigate } from 'react-router-dom';
-import { FileText, PlusCircle, DatabaseZap } from 'lucide-react';
+import { FileText, PlusCircle, DatabaseZap, Share2 } from 'lucide-react';
 import { useTimerStore } from '../store/timerStore';
 import { useLangStore } from '../store/langStore';
 
@@ -73,13 +73,30 @@ export default function HomeScreen() {
                     <span className="text-[var(--accent)]">{r.base_temp_c}°C</span>
                   </div>
                 </div>
-                <button 
-                  onClick={(e) => handleEditRecipe(e, r)} 
-                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-primary)] rounded-full transition-colors"
-                  aria-label="Edit Recipe"
-                >
-                  <FileText size={20} />
-                </button>
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const txt = `💡 FilmDev Recipe:\n[${r.name}]\nISO:${r.iso_shot} | Temp:${r.base_temp_c}°C\nSteps: ${r.steps.map(s => s.name).join(' > ')}`;
+                      if (navigator.share) {
+                        try { await navigator.share({ title: r.name, text: txt }); } catch (err) {}
+                      } else {
+                        await navigator.clipboard.writeText(txt);
+                        alert("레시피 텍스트가 클립보드에 복사되었습니다. (클라우드 파싱 URL 지원 예정)");
+                      }
+                    }}
+                    className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-primary)] rounded-full transition-colors"
+                  >
+                    <Share2 size={18} />
+                  </button>
+                  <button 
+                    onClick={(e) => handleEditRecipe(e, r)} 
+                    className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-primary)] rounded-full transition-colors"
+                    aria-label="Edit Recipe"
+                  >
+                    <FileText size={20} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

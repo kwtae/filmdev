@@ -3,6 +3,8 @@ import { useTimerStore } from '../store/timerStore';
 import { useLangStore } from '../store/langStore';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, CheckCircle, AlertTriangle, BatteryWarning, FastForward, Play, Pause } from 'lucide-react';
+import { db } from '../db/db';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ActiveProcessScreen() {
   const navigate = useNavigate();
@@ -62,6 +64,7 @@ export default function ActiveProcessScreen() {
   }, [status, endTimeMs, remainingMs, nextStep, recipe, currentStepIndex]);
 
   const beep = (freq: number, type: OscillatorType, durSec: number = 0.5) => {
+    try { if ('vibrate' in navigator) navigator.vibrate(durSec * 1000); } catch(e){} // Haptic feedback
     if (!audioCtxRef.current) return;
     const osc = audioCtxRef.current.createOscillator();
     const gainNode = audioCtxRef.current.createGain();
@@ -129,6 +132,7 @@ export default function ActiveProcessScreen() {
   };
 
   const handleAreaTap = () => {
+    try { if ('vibrate' in navigator) navigator.vibrate(50); } catch(e){} // 햅틱 미세 터치
     if (status === 'RUNNING') pauseTimer(displayRemaining);
     else if (status === 'PAUSED') resumeTimer();
   };
@@ -139,6 +143,21 @@ export default function ActiveProcessScreen() {
     lastAgitationSecRef.current = null;
     nextStep();
   }
+
+  const handleCompleteSave = async () => {
+    if (recipe) {
+      await db.logs.put({
+        id: uuidv4(),
+        date: Date.now(),
+        recipe_id: recipe.id,
+        recipe_name: recipe.name,
+        actual_temp_c: liveSensorTemp || recipe.base_temp_c,
+        notes: `자동 생성 로그`
+      });
+    }
+    reset();
+    navigate('/logs');
+  };
 
   if (!recipe) {
     return (
@@ -256,7 +275,7 @@ export default function ActiveProcessScreen() {
         <button 
           disabled={!postChecks.every(Boolean)}
           className="btn btn-secondary mt-auto w-full shadow-lg h-16 text-lg disabled:opacity-50 disabled:bg-[var(--bg-secondary)]" 
-          onClick={() => { reset(); navigate('/'); }}
+          onClick={handleCompleteSave}
         >
           {t('completeSave')}
         </button>

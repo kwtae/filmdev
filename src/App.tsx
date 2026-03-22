@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { Home as HomeIcon, Beaker, Settings as SettingsIcon, Moon, Sun, BookOpen, Languages } from 'lucide-react';
+import { Home as HomeIcon, Beaker, Settings as SettingsIcon, Moon, Sun, BookOpen, Languages, ScrollText } from 'lucide-react';
 import { cn } from './lib/utils';
 import HomeScreen from './pages/HomeScreen';
 import SettingsScreen from './pages/SettingsScreen';
 import ActiveProcessScreen from './pages/ActiveProcessScreen';
 import WikiScreen from './pages/WikiScreen';
 import RecipeEditorScreen from './pages/RecipeEditorScreen';
+import LogbookScreen from './pages/LogbookScreen';
 import { useTimerStore } from './store/timerStore';
 import { useLangStore } from './store/langStore';
 
@@ -23,6 +24,10 @@ function NavigationFooter() {
 
       <button onClick={() => navigate('/wiki')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/wiki' && "opacity-100 text-[var(--accent)]")}>
         <BookOpen size={24} />
+      </button>
+
+      <button onClick={() => navigate('/logs')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/logs' && "opacity-100 text-[var(--accent)]")}>
+        <ScrollText size={24} />
       </button>
 
       <button onClick={() => navigate('/timer')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/timer' && "opacity-100 text-[var(--accent)]")}>
@@ -86,6 +91,7 @@ function AppLayout() {
           <Route path="/settings" element={<SettingsScreen />} />
           <Route path="/wiki" element={<WikiScreen />} />
           <Route path="/editor" element={<RecipeEditorScreen />} />
+          <Route path="/logs" element={<LogbookScreen />} />
         </Routes>
       </main>
 
