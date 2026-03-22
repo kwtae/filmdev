@@ -17,22 +17,22 @@ function NavigationFooter() {
 
   return (
     <footer className="shrink-0 border-t border-[var(--border)] p-4 flex justify-around items-center bg-[var(--bg-secondary)] pb-8 pt-4 touch-manipulation relative z-50 shadow-2xl">
-      <button onClick={() => navigate('/')} className={cn("flex flex-col items-center gap-1 opacity-60 hover:opacity-100 active:scale-95 transition-all text-[var(--text-primary)]", location.pathname === '/' && "opacity-100 text-[var(--accent)]")}>
+      <button onClick={() => navigate('/')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/' && "opacity-100 text-[var(--accent)]")}>
         <HomeIcon size={24} />
       </button>
 
-      <button onClick={() => navigate('/wiki')} className={cn("flex flex-col items-center gap-1 opacity-60 hover:opacity-100 active:scale-95 transition-all text-[var(--text-primary)]", location.pathname === '/wiki' && "opacity-100 text-[var(--accent)]")}>
+      <button onClick={() => navigate('/wiki')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/wiki' && "opacity-100 text-[var(--accent)]")}>
         <BookOpen size={24} />
       </button>
 
-      <button onClick={() => navigate('/timer')} className={cn("flex flex-col items-center gap-1 opacity-60 hover:opacity-100 active:scale-95 transition-all text-[var(--text-primary)]", location.pathname === '/timer' && "opacity-100 text-[var(--accent)]")}>
+      <button onClick={() => navigate('/timer')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/timer' && "opacity-100 text-[var(--accent)]")}>
         <div className="relative">
           <Beaker size={24} />
-          {isActiveTimerProcessRunning && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--danger)] rounded-full animate-ping block shadow-[0_0_10px_var(--danger)]" />}
+          {isActiveTimerProcessRunning && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[var(--danger)] rounded-full block shadow-[0_0_10px_var(--danger)]" />}
         </div>
       </button>
 
-      <button onClick={() => navigate('/settings')} className={cn("flex flex-col items-center gap-1 opacity-60 hover:opacity-100 active:scale-95 transition-all text-[var(--text-primary)]", location.pathname === '/settings' && "opacity-100 text-[var(--accent)]")}>
+      <button onClick={() => navigate('/settings')} className={cn("flex flex-col items-center gap-1 opacity-60 text-[var(--text-primary)]", location.pathname === '/settings' && "opacity-100 text-[var(--accent)]")}>
         <SettingsIcon size={24} />
       </button>
     </footer>

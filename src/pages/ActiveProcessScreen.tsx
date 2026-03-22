@@ -13,7 +13,7 @@ export default function ActiveProcessScreen() {
   } = useTimerStore();
   
   const [displayRemaining, setDisplayRemaining] = useState(0);
-  const [checks, setChecks] = useState([false, false, false]);
+  const [checks, setChecks] = useState([false, false, false, false]);
 
   const rafRef = useRef<number | undefined>(undefined);
   const wakeLockRef = useRef<any>(null);
@@ -82,7 +82,18 @@ export default function ActiveProcessScreen() {
       }
     }
   };
-
+  const handleAudioTest = () => {
+    // Force init and resume inside user gesture
+    if (!audioCtxRef.current) {
+      const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+      audioCtxRef.current = new Ctx();
+    }
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+    beep(500, 'sine', 0.2);
+    setChecks([checks[0], checks[1], true, checks[3]]);
+  };
   useEffect(() => {
     return () => {
       if (wakeLockRef.current) wakeLockRef.current.release().then(() => { wakeLockRef.current = null; });
@@ -149,28 +160,47 @@ export default function ActiveProcessScreen() {
         </div>
         
         <div className="flex flex-col gap-3 my-4 flex-1 justify-center">
-          <label className="card flex items-center justify-between cursor-pointer group hover:border-[var(--accent)] transition-all">
-            <span className="font-medium text-lg text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-[var(--text-secondary)] flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[var(--bg-primary)] flex items-center justify-center text-xs font-bold border border-[var(--border)]">1</span>
               {t('devTemp')} ~ {recipe.base_temp_c}°C 
               {liveSensorTemp !== null && <span className="ml-2 text-[var(--danger)] animate-pulse">({liveSensorTemp.toFixed(1)}°C)</span>}
             </span>
             <div className="flex items-center gap-3">
-              <button onClick={(e) => { e.preventDefault(); connectBLESensor(); }} className="text-xs border text-[var(--accent)] border-[var(--accent)] px-2 py-1 rounded">BLE</button>
+              <button onClick={(e) => { e.preventDefault(); connectBLESensor(); }} className="text-[10px] font-bold uppercase border text-[var(--accent)] border-[var(--accent)] px-2 py-1 rounded">Read BLE</button>
               <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
-                checked={checks[0]} onChange={(e) => setChecks([e.target.checked, checks[1], checks[2]])} />
+                checked={checks[0]} onChange={(e) => setChecks([e.target.checked, checks[1], checks[2], checks[3]])} />
             </div>
           </label>
-          <label className="card flex items-center justify-between cursor-pointer group hover:border-[var(--accent)] transition-all">
-            <span className="font-medium text-lg text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">{t('filmLoaded')}</span>
-            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
-              checked={checks[1]} onChange={(e) => setChecks([checks[0], e.target.checked, checks[2]])} />
-          </label>
-          <label className="card flex items-center justify-between cursor-pointer group hover:border-[var(--accent)] transition-all">
-            <span className="font-medium text-lg flex items-center gap-2 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
-              <BatteryWarning className="text-[var(--danger)] shrink-0" size={20} /> {t('ensureVolume')}
+
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-[var(--text-secondary)] flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[var(--bg-primary)] flex items-center justify-center text-xs font-bold border border-[var(--border)]">2</span>
+              {t('filmLoaded')}
             </span>
             <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
-              checked={checks[2]} onChange={(e) => setChecks([checks[0], checks[1], e.target.checked])} />
+              checked={checks[1]} onChange={(e) => setChecks([checks[0], e.target.checked, checks[2], checks[3]])} />
+          </label>
+
+          <div className="card flex items-center justify-between border-[var(--border)]">
+            <span className="font-medium text-[var(--text-secondary)] flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[var(--bg-primary)] flex items-center justify-center text-xs font-bold border border-[var(--border)]">3</span>
+              <BatteryWarning className="text-[var(--danger)] shrink-0" size={16} /> Volume & Audio
+            </span>
+            <div className="flex items-center gap-3">
+              <button onClick={handleAudioTest} className="text-[10px] font-bold uppercase bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)] px-2 py-1 rounded active:scale-95">Test Ping</button>
+              <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+                checked={checks[2]} onChange={(e) => setChecks([checks[0], checks[1], e.target.checked, checks[3]])} />
+            </div>
+          </div>
+
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-[var(--text-secondary)] flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[var(--bg-primary)] flex items-center justify-center text-xs font-bold border border-[var(--border)]">4</span>
+              Stop & Fix Chemistry Ready
+            </span>
+            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+              checked={checks[3]} onChange={(e) => setChecks([checks[0], checks[1], checks[2], e.target.checked])} />
           </label>
         </div>
 
