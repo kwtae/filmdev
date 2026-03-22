@@ -12,22 +12,76 @@ export default function HomeScreen() {
   const t = useLangStore(state => state.t);
 
   const injectSeedData = async () => {
-    const seed: Recipe = {
-      id: "seed_kodak_d76",
-      name: "Kodak Tri-X 400 (D-76 1:1)",
-      type: "standard",
-      film_type: "B&W",
-      iso_shot: 400,
-      base_temp_c: 20,
-      compensation_coefficient: 1.0,
-      steps: [
-        { name: "Developer", duration_sec: 585, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
-        { name: "Stop Bath", duration_sec: 30, agitation_interval_sec: 0, agitation_duration_sec: 30, agitation_type: "inversion" },
-        { name: "Fixer", duration_sec: 300, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
-        { name: "Wash", duration_sec: 600, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
-      ]
-    };
-    await db.recipes.put(seed);
+    const seeds: Recipe[] = [
+      {
+        id: "seed_kodak_d76",
+        name: "Kodak Tri-X 400 (D-76 1:1)",
+        type: "standard", film_type: "B&W", iso_shot: 400, base_temp_c: 20, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Developer", duration_sec: 585, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Stop Bath", duration_sec: 30, agitation_interval_sec: 0, agitation_duration_sec: 30, agitation_type: "continuous" },
+          { name: "Fixer", duration_sec: 300, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 600, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
+        ]
+      },
+      {
+        id: "seed_hp5_hc110",
+        name: "Ilford HP5+ (Ilfotec HC 1:31)",
+        type: "standard", film_type: "B&W", iso_shot: 400, base_temp_c: 20, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Developer", duration_sec: 390, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Stop Bath", duration_sec: 30, agitation_interval_sec: 0, agitation_duration_sec: 30, agitation_type: "continuous" },
+          { name: "Fixer", duration_sec: 240, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 300, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
+        ]
+      },
+      {
+        id: "seed_c41_portra",
+        name: "Kodak Portra 400 (C-41 Standard)",
+        type: "standard", film_type: "C-41", iso_shot: 400, base_temp_c: 39, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Pre-Wash (39°C)", duration_sec: 60, agitation_interval_sec: 0, agitation_duration_sec: 60, agitation_type: "continuous" },
+          { name: "Developer (C-41)", duration_sec: 210, agitation_interval_sec: 30, agitation_duration_sec: 5, agitation_type: "inversion" },
+          { name: "Blix (Bleach/Fix)", duration_sec: 480, agitation_interval_sec: 30, agitation_duration_sec: 5, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 180, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" },
+          { name: "Stabilizer", duration_sec: 60, agitation_interval_sec: 0, agitation_duration_sec: 60, agitation_type: "continuous" }
+        ]
+      },
+      {
+        id: "seed_foma_rodinal",
+        name: "Fomapan 100 (Rodinal 1:50)",
+        type: "standard", film_type: "B&W", iso_shot: 100, base_temp_c: 20, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Developer", duration_sec: 540, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Stop Bath", duration_sec: 30, agitation_interval_sec: 0, agitation_duration_sec: 30, agitation_type: "continuous" },
+          { name: "Fixer", duration_sec: 300, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 600, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
+        ]
+      },
+      {
+        id: "seed_kentmere_hc",
+        name: "Kentmere 400 (HC-110 Dil B)",
+        type: "standard", film_type: "B&W", iso_shot: 400, base_temp_c: 20, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Developer", duration_sec: 300, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Stop Bath", duration_sec: 30, agitation_interval_sec: 0, agitation_duration_sec: 30, agitation_type: "continuous" },
+          { name: "Fixer", duration_sec: 240, agitation_interval_sec: 60, agitation_duration_sec: 10, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 300, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
+        ]
+      },
+      {
+        id: "seed_vision3_ecl",
+        name: "Cinestill 800T (C-41 Push +1)",
+        type: "standard", film_type: "C-41", iso_shot: 800, base_temp_c: 39, compensation_coefficient: 1.0,
+        steps: [
+          { name: "Pre-Wash", duration_sec: 60, agitation_interval_sec: 0, agitation_duration_sec: 60, agitation_type: "continuous" },
+          { name: "Developer (+1 Stop)", duration_sec: 255, agitation_interval_sec: 30, agitation_duration_sec: 5, agitation_type: "inversion" },
+          { name: "Blix", duration_sec: 480, agitation_interval_sec: 30, agitation_duration_sec: 5, agitation_type: "inversion" },
+          { name: "Wash", duration_sec: 180, agitation_interval_sec: 0, agitation_duration_sec: 0, agitation_type: "continuous" }
+        ]
+      }
+    ];
+    await db.recipes.bulkPut(seeds);
   };
 
   const handleStartProcess = (recipe: Recipe) => {

@@ -2,6 +2,7 @@
 
 ## [v1.1.0] - 2026-03-23
 ### ✨ 기능 추가 (Features)
+- **Massive Preset DB (프리셋 데이터베이스 고도화):** 텅 빈 앱에서 최초 시작 시 `Load Preset` 버튼을 누르면 단일 샘플이 아닌, 글로벌 스탠다드 현상 시간표(Massive Dev Chart)의 가장 대중적인 정밀 데이터 6종(Tri-X D-76, HP5 HC-110, Portra C-41, Fomapan Rodinal, Cinestill 800T 푸쉬 현상 등)이 초 단위 교반 세팅값과 함께 일괄 적재(`bulkPut`)되는 기능 완비.
 - **자동화 현상 일지 (Logbook & History):** 현상 작업 완료 후 `Complete & Save Log` 클릭 시, 해당 날짜의 레시피 제원 및 센서 온도, 코멘트 등을 IndexedDB `logs` 하위 스키마에 자동 적재. 네비게이션 탭의 전용 기록장(Logbook) 페이지에서 시간 순으로 열람/삭제 가능.
 - **햅틱 모터 제어 (Haptic Feedback):** Web API `navigator.vibrate()`를 호출하여 단순 오디오 비프음만이 아닌 촉각적 피드백 제공 (화면 탭 및 현상 알람 발생 시 디바이스 물리 진동 발생).
 - **레시피 공유 기능 (Share/Export):** 홈 화면 레시피 리스트에 직접 공유(Share2) 버튼을 부착하여, `navigator.share` (모바일 OS 기본 공유 모달) 또는 클립보드를 통해 텍스트화된 레시피 정보를 동료들에게 즉시 송신 가능.
