@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Calculator, Beaker, Zap, FileQuestion, AlertOctagon } from 'lucide-react';
+import { BookOpen, Calculator, Beaker, Zap, FileQuestion, AlertOctagon, ClipboardCheck } from 'lucide-react';
 
 const tipsDB = [
   { id: 1, title: '암백(Darkbag) 훈련법', content: '입문자가 가장 많이 실패하는 단계입니다. 버리는 폐필름 하나를 활용해 눈을 감고 릴에 필름을 말아넣는 연습을 수십 번 반복하십시오. 실전에서 손에 땀이 나면 릴이 끈적거려 잘 안 들어가니, 손을 차갑고 건조하게 유지하세요.' },
@@ -39,8 +39,27 @@ const errorDB = [
   { id: 7, title: '작고 까만 기포구멍들 (Pinhole Effect)', fail: '필름 전체 샷에 바늘로 콕콕 찌른 것 같은 수많은 미세한 검은색 핀홀 자국(스캔 시 하얀색)이 박혀 있습니다.', reason: '강산 + 강염기 충돌입니다! 현상액의 알칼리와 아주 쎈 산성의 정지액이 충돌하면서 마치 콜라처럼 "탄산가스"를 폭발시켰고, 이 가스 방울들이 에멀전 속에서 팽창하며 조직을 파먹고 터져버린 아픈 상처들입니다. 정지액 비율을 낮추십시오.' }
 ];
 
+const diagnosticDB = [
+  { group: 'Density (명암/밀도 결함)', items: [
+    { name: '1. 너무 얇고 투명한 네거티브 (Thin Negative)', checks: ['[카메라] 노출 부족 (언더 노출) 상태로 촬영했는가?', '[타이머] 기본 현상 시간을 너무 짧게 잡았는가?', '[타이머] 약품의 온도(Temp)를 20도보다 한참 낮게 사용했는가?', '[케미컬] 현상액이 오래 방치되어 산화(갈변) 및 사망 상태인가?', '[교반] 교반 횟수가 너무 적어 현상액이 잠상 위에 고여있었는가?'] },
+    { name: '2. 징그럽게 두껍고 새까만 네거티브 (Dense/Overdeveloped)', checks: ['[카메라] 노출 과다 제어나 조리개를 너무 열고 찍지 않았나?', '[타이머] 기본 현상 시간보다 실수로 2배 이상 담가두었는가?', '[타이머] 현상액 온도를 차갑게 식히지 않고 한여름 상온수(28도 등)를そのまま 쓰지 않았는가?', '[케미컬] 희석 비율을 틀려 원액(Stock)처럼 너무 강하게 타지 않았는가?', '[교반] 너무 거칠거나 쉴 새 없이 빙빙 돌리며 교반하지 않았나?'] }
+  ]},
+  { group: 'Contrast (대비도 이상)', items: [
+    { name: '1. 콘트라스트가 전혀 없고 밋밋한 회색조 (Flat Image)', checks: ['[카메라] 역광(Backlight)이나 뿌연 역광 피사체를 찍지 않았는가? (전형적인 렌즈 플레어 탈색)', '[케미컬] 현상액의 생명선(Expiry)이 간당간당하거나 힘이 빠진 재사용액을 너무 오래 쓰지 않았나?', '[타이머] 섀도우를 끌어올리기 위한 시간 연장이 구조적으로 부족한가?'] },
+    { name: '2. 눈이 아플 만큼 극단적인 대비 (Soot and Whitewash)', checks: ['[카메라/과정] 지나친 고감도 증감(Push +2~+3) 현상을 습관적으로 자주 남발하는가?', '[타이머] 적정 노출로 찍은 필름을 실수로 과다 연장 현상하지 않았는가?', '[장비] 렌즈의 코팅이 너무 쨍하고 직사광선을 렌즈 캡슐로 곧바로 받았는가?'] }
+  ]},
+  { group: 'Physical & Surface (물리적 표면 손상)', items: [
+    { name: '1. 곧게 뻗은 일자형 스크래치 라인 (Telegraph Lines)', checks: ['[카메라] 필름 압판(Pressure Plate)에 모래나 먼지 찌꺼기가 묻어 필름이 감길 때 긁히지 않는가?', '[카메라] 오토 와인더가 너무 세게 필름을 구겨 감는가?', '[암실] 스퀴지용 집게나 손가락을 너무 꽉 쥐고 죽 훑어내리지 않았는가? (물방울만 톡톡 닦아내야 함)'] },
+    { name: '2. 반점, 흰 구멍, 지문 자국, 스펀지 무늬 (Spots & Marks)', checks: ['[암실] 완전히 건조되기 전 필름을 급해서 육안으로 본다고 젖은 맨손으로 만졌는가?', '[케미컬] Photo-Flo(수세 촉진제)를 탈 때 너무 세게 저어서 비누거품 대환장 파티를 만들지 않았는가?', '[암실] 바싹 말린 필름을 보관 릴에 꽂기 직전 공기중에 먼지가 많은 소파에 내려놓지 않았나?'] },
+    { name: '3. 정체불명의 빛 퍼짐 무늬 (Light Leaks/Fogging)', checks: ['[카메라] 힌지(경첩)쪽 스펀지 차광막 부식이 떨어져 나갔는가? (가장 흔함)', '[암실] 뚜껑인 줄 알고 방 불이 켜진 상태에서 탱크 안의 중앙 깔때기를 실수로 뽑아버렸는가?', '[과정] 필름을 갈아 끼울 때 야외 직사광선 땡볕 아래에서 교체했는가? (가급적 그늘로 숨기)'] }
+  ]},
+  { group: 'C-41 Color Chemistry (컬러 현상 전용)', items: [
+    { name: '1. 황당한 색상 반전이나 녹색 늪 (Crossover / Color Shift)', checks: ['[타이머] 가장 중요한 C-41 현상액 온도(39.0°C)를 무시하고 욕조 온수(30도 등)로 어설프게 버티지 않았나?', '[케미컬] 블릭스(Blix)가 실수로 단 한두 방울이라도 현상액 통으로 떨어져 심각한 오염(Contamination)이 발발하지 않았나? (컬러 약품 오염은 치명적)'] }
+  ]}
+];
+
 export default function WikiScreen() {
-  const [tab, setTab] = useState<'calc' | 'tips' | 'chem' | 'error'>('tips');
+  const [tab, setTab] = useState<'calc' | 'tips' | 'chem' | 'error' | 'diag'>('tips');
 
   const [baseMin, setBaseMin] = useState(10);
   const [baseSec, setBaseSec] = useState(0);
@@ -58,152 +77,204 @@ export default function WikiScreen() {
   const result = calculateCompensation();
 
   return (
-    <div className="p-4 flex flex-col gap-4 pb-24 text-[var(--text-primary)] relative w-full h-full overflow-y-auto">
-      <div className="flex items-center justify-between mb-2 border-b border-[var(--border)] pb-4 shrink-0">
+    <div className="p-4 flex flex-col gap-4 pb-24 text-[var(--text-primary)] relative w-full h-full overflow-hidden">
+      <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 shrink-0 px-2 mt-2">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <BookOpen className="text-[var(--accent)]" size={24} />
-            <h2 className="text-2xl font-bold tracking-tighter uppercase">Knowledge Base</h2>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tighter uppercase">Knowledge Base</h2>
           </div>
-          <p className="text-xs text-[var(--text-secondary)]">초심자를 위한 전문 화학 라이브러리</p>
+          <p className="text-xs text-[var(--text-secondary)]">The ultimate darkroom theory and troubleshooting guide</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-[var(--bg-secondary)] p-1.5 rounded-xl border border-[var(--border)] shrink-0 shadow-sm mt-1 mb-2">
-        <button onClick={() => setTab('tips')} className={`py-3 text-[11px] font-black uppercase tracking-wider rounded-lg flex flex-col items-center justify-center gap-1.5 transition-all ${tab === 'tips' ? 'bg-[var(--bg-primary)] text-[var(--success)] shadow-md ring-1 ring-[var(--success)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-          <FileQuestion size={18}/> 실전 입문
+      <div className="flex overflow-x-auto snap-x hide-scrollbar gap-2 bg-[var(--bg-secondary)] p-1.5 rounded-xl border border-[var(--border)] shrink-0 shadow-sm mb-2 max-w-full">
+        <button onClick={() => setTab('tips')} className={`px-4 py-3 shrink-0 snap-start text-[11px] font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${tab === 'tips' ? 'bg-[var(--bg-primary)] text-[var(--success)] shadow-md ring-1 ring-[var(--success)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+          <FileQuestion size={16}/> 기초 서바이벌 가이드
         </button>
-        <button onClick={() => setTab('chem')} className={`py-3 text-[11px] font-black uppercase tracking-wider rounded-lg flex flex-col items-center justify-center gap-1.5 transition-all ${tab === 'chem' ? 'bg-[var(--bg-primary)] text-yellow-500 shadow-md ring-1 ring-yellow-500/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-          <Zap size={18} className={tab === 'chem' ? 'fill-yellow-500/20' : ''}/> 화학 원리
+        <button onClick={() => setTab('chem')} className={`px-4 py-3 shrink-0 snap-start text-[11px] font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${tab === 'chem' ? 'bg-[var(--bg-primary)] text-yellow-500 shadow-md ring-1 ring-yellow-500/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+          <Zap size={16} className={tab === 'chem' ? 'fill-yellow-500/20' : ''}/> 화학 원리 해설
         </button>
-        <button onClick={() => setTab('error')} className={`py-3 text-[11px] font-black uppercase tracking-wider rounded-lg flex flex-col items-center justify-center gap-1.5 transition-all ${tab === 'error' ? 'bg-[var(--bg-primary)] text-[var(--danger)] shadow-md ring-1 ring-[var(--danger)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-          <AlertOctagon size={18} className={tab === 'error' ? 'fill-[var(--danger)]/10' : ''}/> 실패 부검
+        <button onClick={() => setTab('error')} className={`px-4 py-3 shrink-0 snap-start text-[11px] font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${tab === 'error' ? 'bg-[var(--bg-primary)] text-[var(--danger)] shadow-md ring-1 ring-[var(--danger)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+          <AlertOctagon size={16} className={tab === 'error' ? 'fill-[var(--danger)]/10' : ''}/> 실패 화학 부검
         </button>
-        <button onClick={() => setTab('calc')} className={`py-3 text-[11px] font-black uppercase tracking-wider rounded-lg flex flex-col items-center justify-center gap-1.5 transition-all ${tab === 'calc' ? 'bg-[var(--bg-primary)] text-[var(--accent)] shadow-md ring-1 ring-[var(--accent)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
-          <Calculator size={18}/> 온도 수식
+        <button onClick={() => setTab('diag')} className={`px-4 py-3 shrink-0 snap-start text-[11px] font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${tab === 'diag' ? 'bg-[var(--bg-primary)] text-blue-500 shadow-md ring-1 ring-blue-500/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+          <ClipboardCheck size={16} /> 육안 진단 체크리스트
+        </button>
+        <button onClick={() => setTab('calc')} className={`px-4 py-3 shrink-0 snap-start text-[11px] font-black uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all ${tab === 'calc' ? 'bg-[var(--bg-primary)] text-[var(--accent)] shadow-md ring-1 ring-[var(--accent)]/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`}>
+          <Calculator size={16}/> 온도 변환 공식
         </button>
       </div>
       
-      {tab === 'calc' && (
-        <div className="card border-[var(--accent)] bg-[var(--bg-secondary)] relative overflow-hidden flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <Calculator size={150} />
-          </div>
-          <h3 className="font-bold border-b border-[var(--border)] pb-2 mb-4 flex items-center gap-2 relative z-10 text-[var(--text-primary)]">
-            <Beaker size={18}/> 체계화된 온도 변환 도구 (Arrhenius)
-          </h3>
-          <p className="text-xs text-[var(--text-secondary)] mb-4 leading-relaxed relative z-10 sm:w-[85%]">
-            실제로 현상액의 화학 반응 속도는 온도에 기하급수적으로 반응합니다. 기준점(예: 20도)에서 이탈한 현재 약품 온도를 입력하면, 수축/팽창하는 타임 라인을 수학적으로 증빙하여 보정된 현상 시간을 제시합니다.
-          </p>
-          
-          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 relative z-10 mb-5">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-widest">Base Time (제조사 권장 시간)</span>
-              <div className="flex gap-2">
-                <input type="number" min="0" value={baseMin} onChange={e => setBaseMin(Number(e.target.value))} className="w-full text-center py-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-lg shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
-                <input type="number" min="0" max="59" value={baseSec} onChange={e => setBaseSec(Number(e.target.value))} className="w-full text-center py-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-lg shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
-              </div>
-            </label>
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-widest">Base Temp (기준 온도 °C)</span>
-              <input type="number" step="0.5" value={baseTemp} onChange={e => setBaseTemp(Number(e.target.value))} className="w-full text-center py-3 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-lg shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
-            </label>
-            <label className="flex flex-col gap-2 sm:col-span-2 mt-4 p-5 bg-black/10 rounded-xl relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--accent)]/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
-              <span className="text-[10px] uppercase font-extrabold text-[var(--accent)] tracking-widest relative z-10">실측된 내 약품 온도 (Actual Target °C)</span>
-              <div className="flex items-center gap-4 relative z-10 mt-1">
-                <input type="range" min="15" max="35" step="0.5" value={targetTemp} onChange={e => setTargetTemp(Number(e.target.value))} className="w-full h-2 bg-[var(--bg-primary)] rounded-lg appearance-none cursor-pointer border border-[var(--border)] accent-[var(--accent)]" />
-                <span className="font-black text-3xl w-24 shrink-0 text-right text-[var(--accent)] font-mono drop-shadow">{targetTemp}°C</span>
-              </div>
-            </label>
-          </div>
-
-          <div className="bg-[var(--bg-primary)] p-5 rounded-xl border border-[var(--accent)]/30 relative z-10 shadow-lg flex flex-wrap gap-4 items-center justify-between">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] text-[var(--text-secondary)] uppercase font-extrabold tracking-widest">최종 적용 시간 (Compensated Result)</span>
-              <span className="text-4xl sm:text-5xl font-black text-[var(--text-primary)] font-mono tracking-tighter">{result.newMin}m {result.newSec}s</span>
+      <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pr-1 pb-16">
+        {tab === 'calc' && (
+          <div className="card border-[var(--accent)] bg-[var(--bg-secondary)] relative overflow-hidden flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {/* Same Calc Template */}
+            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+              <Calculator size={150} />
             </div>
-            <div className="text-right flex flex-col justify-end">
-              <span className="text-[10px] text-[var(--text-secondary)] uppercase font-extrabold tracking-widest mb-1">Time Gap</span>
-              <span className={`font-black tracking-normal px-4 py-2 rounded-lg text-lg shadow-inner border border-transparent ${result.diffSecs > 0 ? 'bg-[var(--danger)]/10 text-[var(--danger)] border-[var(--danger)]/50' : 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/50'}`}>
-                {result.diffSecs > 0 ? '+' : ''}{result.diffSecs} SEC
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {tab === 'tips' && (
-        <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
-            <span className="flex items-center gap-2"><FileQuestion size={18} className="text-[var(--success)]" /> 현상 실전 입문서</span>
-            <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{tipsDB.length} TACTICS</span>
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            {tipsDB.map((tip, idx) => (
-              <div key={idx} className="card p-5 group flex flex-col gap-2 border-[var(--border)] hover:border-[var(--success)] transition-colors relative overflow-hidden bg-gradient-to-br hover:from-[var(--bg-secondary)] from-[var(--bg-primary)]">
-                <span className="absolute -right-2 -top-4 text-[6rem] opacity-5 font-black italic">{String(idx + 1).padStart(2, '0')}</span>
-                <h4 className="font-extrabold text-[15px] sm:text-[17px] text-[var(--success)] border-b border-[var(--border)] border-dashed pb-2 inline-block relative z-10 w-fit shrink-0 tracking-tight">{tip.title}</h4>
-                <p className="text-[var(--text-primary)] leading-[1.8] text-[13px] break-keep mt-2 relative z-10 font-medium opacity-90">{tip.content}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {tab === 'chem' && (
-        <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
-            <span className="flex items-center gap-2"><Zap size={18} className="text-yellow-500 fill-yellow-500" /> 화학 반응의 물리학적 원리</span>
-            <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{chemDB.length} THEORIES</span>
-          </h3>
-          <div className="grid grid-cols-1 gap-5">
-            {chemDB.map((chem, idx) => (
-              <div key={idx} className="card p-6 group flex flex-col gap-2 border-[var(--border)] hover:border-yellow-500/50 transition-colors relative overflow-hidden bg-[var(--bg-primary)] shadow-sm">
-                <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
-                  <Zap size={100} className="fill-current text-yellow-500" />
+            <h3 className="font-bold border-b border-[var(--border)] pb-2 mb-4 flex items-center gap-2 relative z-10 text-[var(--text-primary)]">
+              <Beaker size={18}/> 체계화된 온도 변환 도구 (Arrhenius)
+            </h3>
+            <p className="text-[11px] text-[var(--text-secondary)] mb-4 leading-relaxed relative z-10 sm:w-[85%] font-medium">
+              실제로 현상액의 화학 반응 속도는 온도에 기하급수적으로 반응합니다. 기준점(예: 20도)에서 이탈한 현재 약품 온도를 입력하면, 수축/팽창하는 타임 라인을 수학적으로 증빙하여 보정된 현상 시간을 제시합니다.
+            </p>
+            
+            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 relative z-10 mb-5">
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-widest">Base Time (제조사 권장 시간)</span>
+                <div className="flex gap-2">
+                  <input type="number" min="0" value={baseMin} onChange={e => setBaseMin(Number(e.target.value))} className="w-full text-center py-2.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-base shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
+                  <input type="number" min="0" max="59" value={baseSec} onChange={e => setBaseSec(Number(e.target.value))} className="w-full text-center py-2.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-base shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
                 </div>
-                <h4 className="font-black text-[17px] text-[var(--text-primary)] inline-block relative z-10 tracking-tight w-[90%]">{chem.title}</h4>
-                <div className="h-1 w-12 bg-yellow-500/30 my-2 rounded-full relative z-10 group-hover:w-full group-hover:bg-yellow-500 transition-all duration-700 ease-out"></div>
-                <p className="text-[var(--text-secondary)] leading-[1.9] text-[13px] break-keep mt-2 relative z-10 font-bold opacity-80">{chem.content}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-widest">Base Temp (기준 온도 °C)</span>
+                <input type="number" step="0.5" value={baseTemp} onChange={e => setBaseTemp(Number(e.target.value))} className="w-full text-center py-2.5 rounded-lg bg-[var(--bg-primary)] border border-[var(--border)] font-mono text-base shadow-inner outline-none focus:border-[var(--accent)] transition-colors" />
+              </label>
+              <label className="flex flex-col gap-2 sm:col-span-2 mt-2 p-5 bg-black/10 rounded-xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--accent)]/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                <span className="text-[10px] uppercase font-extrabold text-[var(--accent)] tracking-widest relative z-10">실측된 내 약품 온도 (Actual Target °C)</span>
+                <div className="flex items-center gap-4 relative z-10 mt-1">
+                  <input type="range" min="15" max="35" step="0.5" value={targetTemp} onChange={e => setTargetTemp(Number(e.target.value))} className="w-full h-2 bg-[var(--bg-primary)] rounded-lg appearance-none cursor-pointer border border-[var(--border)] accent-[var(--accent)]" />
+                  <span className="font-black text-2xl w-24 shrink-0 text-right text-[var(--accent)] font-mono drop-shadow">{targetTemp}°C</span>
+                </div>
+              </label>
+            </div>
 
-      {tab === 'error' && (
-        <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
-            <span className="flex items-center gap-2"><AlertOctagon size={18} className="text-[var(--danger)]" /> 현상 실패 부검소 (Troubleshooting)</span>
-            <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{errorDB.length} CASES</span>
-          </h3>
-          <p className="text-xs text-[var(--text-secondary)] mb-6 tracking-wide leading-relaxed font-semibold">웹상에서 가장 많이 보고되는 참혹한 데이터들을 역추적하여, 화학적 증상에 기반한 완벽한 원인 부검 검시록을 제공합니다. 여러분의 필름을 버리기 전 먼저 상태를 대조해 보십시오.</p>
-          <div className="grid grid-cols-1 gap-5">
-            {errorDB.map((err, idx) => (
-              <div key={idx} className="card p-6 flex flex-col gap-0 border-l-4 border-l-[var(--danger)] bg-gradient-to-r from-[var(--danger)]/5 to-[var(--bg-primary)] relative shadow-md">
-                <div className="flex items-center gap-3 mb-4 border-b border-[var(--danger)]/20 pb-3">
-                  <div className="w-8 h-8 rounded-full bg-[var(--danger)]/20 flex items-center justify-center text-[var(--danger)] font-black shrink-0">
-                    !
+            <div className="bg-[var(--bg-primary)] p-5 rounded-xl border border-[var(--accent)]/30 relative z-10 shadow-lg flex flex-wrap gap-4 items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] text-[var(--text-secondary)] uppercase font-extrabold tracking-widest">최종 적용 시간 (Compensated Result)</span>
+                <span className="text-4xl sm:text-4xl font-black text-[var(--text-primary)] font-mono tracking-tighter">{result.newMin}m {result.newSec}s</span>
+              </div>
+              <div className="text-right flex flex-col justify-end">
+                <span className="text-[10px] text-[var(--text-secondary)] uppercase font-extrabold tracking-widest mb-1">Time Gap</span>
+                <span className={`font-black tracking-normal px-4 py-2 rounded-lg text-sm shadow-inner border border-transparent ${result.diffSecs > 0 ? 'bg-[var(--danger)]/10 text-[var(--danger)] border-[var(--danger)]/50' : 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/50'}`}>
+                  {result.diffSecs > 0 ? '+' : ''}{result.diffSecs} SEC
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'tips' && (
+          <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
+              <span className="flex items-center gap-2"><FileQuestion size={18} className="text-[var(--success)]" /> 현상 실전 서바이벌 매뉴얼</span>
+              <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{tipsDB.length} TACTICS</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {tipsDB.map((tip, idx) => (
+                <div key={idx} className="card p-5 group flex flex-col gap-2 border-[var(--border)] hover:border-[var(--success)] transition-colors relative overflow-hidden bg-gradient-to-br hover:from-[var(--bg-secondary)] from-[var(--bg-primary)]">
+                  <span className="absolute -right-2 -top-4 text-[6rem] opacity-5 font-black italic">{String(idx + 1).padStart(2, '0')}</span>
+                  <h4 className="font-extrabold text-[15px] sm:text-[16px] text-[var(--success)] border-b border-[var(--border)] border-dashed pb-2 inline-block relative z-10 w-fit shrink-0 tracking-tight">{tip.title}</h4>
+                  <p className="text-[var(--text-primary)] leading-[1.8] text-[13px] break-keep mt-2 relative z-10 font-medium opacity-90">{tip.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === 'chem' && (
+          <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
+              <span className="flex items-center gap-2"><Zap size={18} className="text-yellow-500 fill-yellow-500" /> 화학 반응의 물리학적 원리</span>
+              <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{chemDB.length} THEORIES</span>
+            </h3>
+            <div className="grid grid-cols-1 gap-5">
+              {chemDB.map((chem, idx) => (
+                <div key={idx} className="card p-6 group flex flex-col gap-2 border-[var(--border)] hover:border-yellow-500/50 transition-colors relative overflow-hidden bg-[var(--bg-primary)] shadow-sm">
+                  <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+                    <Zap size={100} className="fill-current text-yellow-500" />
                   </div>
-                  <h4 className="font-black text-lg text-[var(--danger)] drop-shadow-sm tracking-tight">{err.title}</h4>
+                  <h4 className="font-black text-[16px] text-[var(--text-primary)] inline-block relative z-10 tracking-tight max-w-[90%]">{chem.title}</h4>
+                  <div className="h-1 w-12 bg-yellow-500/30 my-2 rounded-full relative z-10 group-hover:w-full group-hover:bg-yellow-500 transition-all duration-700 ease-out"></div>
+                  <p className="text-[var(--text-secondary)] leading-[1.9] text-[13px] break-keep mt-2 relative z-10 font-bold opacity-80">{chem.content}</p>
                 </div>
-                
-                <div className="flex flex-col gap-2 mt-2 bg-black/10 p-4 rounded-lg">
-                  <span className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest border-b border-[var(--border)] pb-1 mb-1">증상 (Symptom)</span>
-                  <p className="font-bold text-[13px] text-[var(--text-primary)] leading-relaxed">{err.fail}</p>
-                </div>
-                
-                <div className="flex flex-col gap-2 mt-4 ml-2">
-                  <span className="text-[10px] font-black uppercase text-[var(--danger)] tracking-widest">부검 소견 & 원인 분석 (Autopsy & Reason)</span>
-                  <p className="text-[13px] leading-[1.8] text-[var(--text-secondary)] font-bold break-keep">{err.reason}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
+        {tab === 'error' && (
+          <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
+              <span className="flex items-center gap-2"><AlertOctagon size={18} className="text-[var(--danger)]" /> 현상 실패 부검소 (Troubleshooting)</span>
+              <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">{errorDB.length} CASES</span>
+            </h3>
+            <p className="text-[11px] text-[var(--text-secondary)] mb-6 tracking-wide leading-relaxed font-semibold">웹상에서 가장 많이 보고되는 참혹한 데이터들을 역추적하여, 화학적 증상에 기반한 완벽한 원인 부검 검시록을 제공합니다. 여러분의 필름을 버리기 전 상태를 대조해 보십시오.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {errorDB.map((err, idx) => (
+                <div key={idx} className="card p-5 flex flex-col gap-0 border-l-4 border-l-[var(--danger)] bg-gradient-to-r from-[var(--danger)]/5 to-[var(--bg-primary)] relative shadow-md">
+                  <div className="flex items-start gap-3 mb-4 border-b border-[var(--danger)]/20 pb-3">
+                    <div className="w-8 h-8 rounded-full bg-[var(--danger)]/10 flex items-center justify-center text-[var(--danger)] font-black shrink-0">
+                      {idx + 1}
+                    </div>
+                    <h4 className="font-black text-[15px] text-[var(--danger)] drop-shadow-sm tracking-tight leading-snug">{err.title}</h4>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1 mt-1 bg-black/10 p-3 rounded-lg border border-black/5">
+                    <span className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest mb-1">증상 (Symptom)</span>
+                    <p className="font-bold text-[13px] text-[var(--text-primary)] leading-normal">{err.fail}</p>
+                  </div>
+                  
+                  <div className="flex flex-col gap-2 mt-4 ml-2">
+                    <span className="text-[10px] font-black uppercase text-[var(--danger)] tracking-widest">부검 결론 (Reasoning)</span>
+                    <p className="text-[12px] leading-[1.8] text-[var(--text-secondary)] font-bold break-keep">{err.reason}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab === 'diag' && (
+          <div className="flex-shrink-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <h3 className="font-black text-sm text-[var(--text-primary)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2 flex items-center justify-between">
+              <span className="flex items-center gap-2"><ClipboardCheck size={18} className="text-blue-500" /> 결과 상태별 정밀 진단 체크리스트</span>
+              <span className="bg-[var(--bg-secondary)] border border-[var(--border)] py-1 px-3 rounded-xl font-mono text-[10px] shadow-sm tracking-widest">DIAGNOSTICS</span>
+            </h3>
+            <p className="text-[11px] text-[var(--text-secondary)] mb-6 tracking-wide leading-relaxed font-semibold">내 손으로 현상한 결과물이 이상해 보이나요? 필름의 겉모습(육안 상태)에서 시작하여 당신의 실수를 역추적하는 알고리즘 리스트를 점검하십시오.</p>
+            
+            <div className="flex flex-col gap-8">
+              {diagnosticDB.map((group, gIdx) => (
+                <div key={gIdx} className="flex flex-col gap-3">
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="h-px bg-[var(--border)] flex-1"></div>
+                    <span className="text-xs font-black uppercase tracking-widest text-blue-500 bg-blue-500/10 px-4 py-1.5 rounded-full border border-blue-500/30">
+                      {group.group}
+                    </span>
+                    <div className="h-px bg-[var(--border)] flex-1"></div>
+                  </div>
+                  
+                  {group.items.map((item, iIdx) => (
+                    <div key={iIdx} className="card p-5 bg-[var(--bg-secondary)] border border-[var(--border)] hover:border-blue-500/50 transition-colors">
+                      <h4 className="font-extrabold text-[15px] mb-4 text-[var(--text-primary)] flex items-center gap-2">
+                        {item.name}
+                      </h4>
+                      <div className="flex flex-col gap-2">
+                        {item.checks.map((chk, ckIdx) => (
+                          <label key={ckIdx} className="flex items-start gap-3 p-2 bg-[var(--bg-primary)] rounded-lg hover:bg-black/10 cursor-pointer group">
+                            <input type="checkbox" className="w-4 h-4 mt-0.5 rounded accent-blue-500 shrink-0 cursor-pointer" />
+                            <span className="text-[13px] font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] break-keep leading-snug">
+                              {chk}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-8 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center gap-3 text-blue-400">
+              <ClipboardCheck size={24} className="shrink-0" />
+              <p className="text-xs font-bold break-keep">이 체크리스트를 순서대로 점검하여 자신의 공정 중 어느 곳에서 실수가 발생했는지 파악하고, 다음 번 작업 시 해당 단계를 보완하십시오.</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
