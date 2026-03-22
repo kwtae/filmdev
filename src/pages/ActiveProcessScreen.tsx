@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import { useTimerStore } from '../store/timerStore';
 import { useLangStore } from '../store/langStore';
 import { useNavigate } from 'react-router-dom';
