@@ -50,6 +50,14 @@ export default function RecipeEditorScreen() {
     navigate('/');
   };
 
+  const handleDelete = async () => {
+    if (!editTarget) return;
+    if (confirm(`Are you sure you want to delete ${editTarget.name}? This cannot be undone.`)) {
+      await db.recipes.delete(editTarget.id);
+      navigate('/');
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 p-4 border-b border-[var(--border)] shrink-0 z-10 sticky top-0 bg-[var(--bg-primary)]">
@@ -153,9 +161,14 @@ export default function RecipeEditorScreen() {
         </div>
       </div>
 
-      <div className="absolute bottom-16 left-0 w-full p-4 bg-gradient-to-t from-[var(--bg-primary)] from-70% to-transparent pointer-events-none">
-        <button onClick={handleSave} disabled={!name} className="btn btn-primary w-full disabled:opacity-50 shadow-[0_0_20px_var(--accent)] pointer-events-auto h-14">
-          <Save size={20} className="mr-2"/> {editTarget ? 'Update Recipe' : 'Save & Publish'}
+      <div className="absolute bottom-16 left-0 w-full p-4 bg-gradient-to-t from-[var(--bg-primary)] from-70% to-transparent pointer-events-none flex gap-3">
+        {editTarget && (
+          <button onClick={handleDelete} className="btn bg-[var(--danger)] text-white p-4 rounded-xl shadow-[0_0_20px_var(--danger)] pointer-events-auto h-14 w-16 shrink-0 flex justify-center items-center opacity-80 hover:opacity-100">
+            <Trash2 size={24}/>
+          </button>
+        )}
+        <button onClick={handleSave} disabled={!name} className="btn btn-primary flex-1 disabled:opacity-50 shadow-[0_0_20px_var(--accent)] pointer-events-auto h-14 whitespace-nowrap">
+          <Save size={20} className="mr-2"/> {editTarget ? 'Update Recipe' : 'Save'}
         </button>
       </div>
     </div>

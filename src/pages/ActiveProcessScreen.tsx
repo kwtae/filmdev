@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
 import { useTimerStore } from '../store/timerStore';
 import { useLangStore } from '../store/langStore';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, CheckCircle, AlertTriangle, BatteryWarning, FastForward } from 'lucide-react';
+import { ChevronRight, CheckCircle, AlertTriangle, BatteryWarning, FastForward, Play, Pause } from 'lucide-react';
 
 export default function ActiveProcessScreen() {
   const navigate = useNavigate();
@@ -273,20 +272,37 @@ export default function ActiveProcessScreen() {
   return (
     <div className="relative flex flex-col h-full bg-[var(--bg-primary)] select-none">
       
+      {/* Massive Visual Play/Pause Overlay Hitbox */}
       <div 
-        className="absolute inset-0 z-10 w-full h-[60vh] mt-[20vh] cursor-pointer touch-none"
+        className="absolute inset-0 z-30 touch-none flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer group"
         onClick={handleAreaTap}
         aria-label="Play or Pause Space"
-      />
+      >
+        {status === 'RUNNING' && <Pause size={120} className="text-[var(--text-primary)] opacity-5 p-4 rounded-full border-4 border-current" />}
+      </div>
 
-      <div className="flex flex-col flex-1 pb-16 justify-between text-center relative pointer-events-none">
+      {status === 'PAUSED' && (
+        <div 
+          className="absolute inset-0 z-40 bg-black/80 flex flex-col items-center justify-center cursor-pointer pointer-events-auto backdrop-blur-sm transition-all"
+          onClick={handleAreaTap}
+        >
+          <div className="bg-[var(--danger)] p-8 rounded-full animate-bounce shadow-[0_0_40px_var(--danger)] mt-20">
+             <Play size={80} fill="white" className="text-white ml-2" />
+          </div>
+          <h2 className="text-5xl font-black text-white mt-12 tracking-tighter uppercase px-2 py-4 border-y-4 border-[var(--danger)]">Paused</h2>
+          <p className="text-white/70 mt-4 text-center text-sm font-bold uppercase tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/20">
+            탭하여 다시 시작<br/>(Tap to Resume)
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-col flex-1 pb-16 justify-between text-center relative pointer-events-none z-20">
         
         {/* Top Header & Skip Action */}
-        <div className="pt-6 px-4 flex justify-between items-start pointer-events-auto z-20">
+        <div className="pt-6 px-4 flex justify-between items-start pointer-events-auto">
            <div className="text-left">
              <div className="inline-block relative">
-               <h2 className="text-4xl font-bold tracking-tighter text-[var(--accent)] uppercase">{currentStep.name}</h2>
-               {status === 'PAUSED' && <span className="absolute -right-8 -top-8 bg-[var(--danger)] text-white px-2 py-1 text-xs font-bold rounded animate-pulse shadow-xl shadow-[var(--danger)]">PAUSED</span>}
+               <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-[var(--accent)] uppercase max-w-[60vw] truncate">{currentStep.name}</h2>
              </div>
              <p className="text-[var(--text-secondary)] mt-1 font-mono uppercase text-sm tracking-widest">Step {currentStepIndex + 1} of {recipe.steps.length}</p>
            </div>
