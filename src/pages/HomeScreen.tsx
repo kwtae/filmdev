@@ -35,6 +35,11 @@ export default function HomeScreen() {
     navigate('/timer');
   };
 
+  const handleEditRecipe = (e: React.MouseEvent, recipe: Recipe) => {
+    e.stopPropagation();
+    navigate('/editor', { state: { recipe } });
+  };
+
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex justify-between items-center mb-4">
@@ -68,7 +73,11 @@ export default function HomeScreen() {
                     <span className="text-[var(--accent)]">{r.base_temp_c}°C</span>
                   </div>
                 </div>
-                <button className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)]">
+                <button 
+                  onClick={(e) => handleEditRecipe(e, r)} 
+                  className="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--bg-primary)] rounded-full transition-colors"
+                  aria-label="Edit Recipe"
+                >
                   <FileText size={20} />
                 </button>
               </div>

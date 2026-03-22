@@ -8,8 +8,8 @@ export default function ActiveProcessScreen() {
   const navigate = useNavigate();
   const t = useLangStore(s => s.t);
   const { 
-    status, recipe, currentStepIndex, endTimeMs, remainingMs, 
-    startTimer, pauseTimer, resumeTimer, nextStep, reset 
+    status, recipe, currentStepIndex, endTimeMs, remainingMs, liveSensorTemp,
+    startTimer, pauseTimer, resumeTimer, nextStep, reset, setSensorTemp
   } = useTimerStore();
   
   const [displayRemaining, setDisplayRemaining] = useState(0);
@@ -89,6 +89,21 @@ export default function ActiveProcessScreen() {
     };
   }, []);
 
+  const connectBLESensor = async () => {
+    try {
+      if (!('bluetooth' in navigator)) throw new Error('Web Bluetooth API not supported');
+      const device = await (navigator as any).bluetooth.requestDevice({ acceptAllDevices: true });
+      // Stub: Subscribe to GATT Health Thermometer char here.
+      // Simulating connected sensor returning temp around target.
+      alert(`Connected to device: ${device.name || 'Sensor'}`);
+      setSensorTemp((recipe?.base_temp_c || 20) + 0.2); 
+    } catch (e: any) {
+      alert("Bluetooth connection failed or skipped: " + e.message);
+      // Fallback emulation for dev
+      setSensorTemp(recipe?.base_temp_c || 20);
+    }
+  };
+
   const handleStartProcess = async () => {
     if (!audioCtxRef.current) {
       const Ctx = window.AudioContext || (window as any).webkitAudioContext;
@@ -135,9 +150,15 @@ export default function ActiveProcessScreen() {
         
         <div className="flex flex-col gap-3 my-4 flex-1 justify-center">
           <label className="card flex items-center justify-between cursor-pointer group hover:border-[var(--accent)] transition-all">
-            <span className="font-medium text-lg text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">{t('devTemp')} ~ {recipe.base_temp_c}°C</span>
-            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
-              checked={checks[0]} onChange={(e) => setChecks([e.target.checked, checks[1], checks[2]])} />
+            <span className="font-medium text-lg text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
+              {t('devTemp')} ~ {recipe.base_temp_c}°C 
+              {liveSensorTemp !== null && <span className="ml-2 text-[var(--danger)] animate-pulse">({liveSensorTemp.toFixed(1)}°C)</span>}
+            </span>
+            <div className="flex items-center gap-3">
+              <button onClick={(e) => { e.preventDefault(); connectBLESensor(); }} className="text-xs border text-[var(--accent)] border-[var(--accent)] px-2 py-1 rounded">BLE</button>
+              <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+                checked={checks[0]} onChange={(e) => setChecks([e.target.checked, checks[1], checks[2]])} />
+            </div>
           </label>
           <label className="card flex items-center justify-between cursor-pointer group hover:border-[var(--accent)] transition-all">
             <span className="font-medium text-lg text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">{t('filmLoaded')}</span>

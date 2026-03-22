@@ -11,6 +11,7 @@ interface TimerStoreState {
   endTimeMs: number | null; 
   remainingMs: number | null; 
   agitationMisses: number;
+  liveSensorTemp: number | null; // BLE Temperature probe monitoring
   
   startPrep: (recipe: Recipe) => void;
   startTimer: () => void;
@@ -19,6 +20,7 @@ interface TimerStoreState {
   nextStep: () => void;
   reset: () => void;
   registerMissedAgitation: () => void;
+  setSensorTemp: (temp: number | null) => void;
 }
 
 export const useTimerStore = create<TimerStoreState>()(
@@ -30,8 +32,9 @@ export const useTimerStore = create<TimerStoreState>()(
       endTimeMs: null,
       remainingMs: null,
       agitationMisses: 0,
+      liveSensorTemp: null,
 
-      startPrep: (recipe) => set({ status: 'PREP', recipe, currentStepIndex: 0, agitationMisses: 0 }),
+      startPrep: (recipe) => set({ status: 'PREP', recipe, currentStepIndex: 0, agitationMisses: 0, liveSensorTemp: null }),
       startTimer: () => {
         const state = get();
         if (!state.recipe || state.status !== 'PREP') return;
@@ -73,9 +76,10 @@ export const useTimerStore = create<TimerStoreState>()(
       },
       reset: () => set({ 
         status: 'IDLE', recipe: null, currentStepIndex: 0, 
-        endTimeMs: null, remainingMs: null, agitationMisses: 0 
+        endTimeMs: null, remainingMs: null, agitationMisses: 0, liveSensorTemp: null 
       }),
-      registerMissedAgitation: () => set((state) => ({ agitationMisses: state.agitationMisses + 1 }))
+      registerMissedAgitation: () => set((state) => ({ agitationMisses: state.agitationMisses + 1 })),
+      setSensorTemp: (temp) => set({ liveSensorTemp: temp })
     }),
     {
       name: 'film-dev-timer-storage',
