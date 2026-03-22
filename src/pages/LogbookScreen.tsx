@@ -1,10 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
-import { useNavigate } from 'react-router-dom';
 import { ScrollText, Calendar, Trash2 } from 'lucide-react';
 
 export default function LogbookScreen() {
-  const navigate = useNavigate();
   // Fetch logs sorted by date descending
   const logs = useLiveQuery(() => db.logs.orderBy('date').reverse().toArray());
 

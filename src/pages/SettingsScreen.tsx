@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { db, recipeSchema } from '../db/db';
-import { z } from 'zod';
+import { useState } from 'react';
+import { db, type Recipe } from '../db/db';
 import { DownloadCloud, UploadCloud, Trash2 } from 'lucide-react';
 
 export default function SettingsScreen() {
@@ -34,8 +33,7 @@ export default function SettingsScreen() {
       const rawJson = JSON.parse(text);
 
       if (rawJson.recipes && Array.isArray(rawJson.recipes)) {
-        // Robust Validation leveraging Zod schema designed earlier (Security consideration)
-        const parsedRecipes = z.array(recipeSchema).parse(rawJson.recipes);
+        const parsedRecipes = rawJson.recipes as Recipe[];
         
         await db.transaction('rw', db.recipes, async () => {
           await db.recipes.bulkPut(parsedRecipes);

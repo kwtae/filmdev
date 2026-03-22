@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Home as HomeIcon, Beaker, Settings as SettingsIcon, Moon, Sun, BookOpen, Languages, ScrollText } from 'lucide-react';
 import { cn } from './lib/utils';
