@@ -225,13 +225,13 @@ export default function ActiveProcessScreen() {
              <p className="text-[var(--text-secondary)] mt-1 font-mono uppercase text-sm tracking-widest">Step {currentStepIndex + 1} of {recipe.steps.length}</p>
            </div>
            {/* Skip Step Button */}
-           <button onClick={handleSkipStep} className="btn border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-xs opacity-75 hover:opacity-100 flex gap-1 items-center">
-             <FastForward size={14}/> {t('skipStep')}
+           <button onClick={handleSkipStep} className="btn border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm font-bold opacity-75 hover:opacity-100 flex gap-2 items-center">
+             <FastForward size={16}/> {t('skipStep')}
            </button>
         </div>
 
-        <div className="w-full relative flex items-center justify-center py-6 bg-[var(--bg-secondary)] border-y border-[var(--border)] font-mono drop-shadow-2xl">
-          <span className="text-[7rem] leading-none font-black tracking-tighter text-[var(--text-primary)]">
+        <div className="w-full relative flex items-center justify-center py-6 sm:py-12 bg-[var(--bg-secondary)] border-y border-[var(--border)] font-mono drop-shadow-2xl">
+          <span className="text-[25vw] sm:text-[12rem] leading-none font-black tracking-tighter text-[var(--text-primary)]">
             {mins}:{secs}
           </span>
         </div>

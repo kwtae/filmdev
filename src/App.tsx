@@ -52,7 +52,7 @@ function AppLayout() {
   }, [themeMode]);
 
   return (
-    <div className="flex flex-col h-[100dvh] max-w-md mx-auto relative overflow-hidden bg-[var(--bg-primary)] tracking-tight">
+    <div className="flex flex-col h-[100dvh] w-full max-w-3xl mx-auto relative overflow-hidden bg-[var(--bg-primary)] tracking-tight outline outline-1 outline-[var(--border)] shadow-2xl">
       
       <header className="flex justify-between items-center p-4 border-b border-[var(--border)] shrink-0 bg-[var(--bg-primary)] z-50">
         <h1 className="font-bold text-xl tracking-tighter text-[var(--text-primary)] flex items-center gap-2">
