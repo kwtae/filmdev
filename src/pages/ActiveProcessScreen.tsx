@@ -14,6 +14,7 @@ export default function ActiveProcessScreen() {
   
   const [displayRemaining, setDisplayRemaining] = useState(0);
   const [checks, setChecks] = useState([false, false, false, false]);
+  const [postChecks, setPostChecks] = useState([false, false, false, false]);
 
   const rafRef = useRef<number | undefined>(undefined);
   const wakeLockRef = useRef<any>(null);
@@ -217,13 +218,48 @@ export default function ActiveProcessScreen() {
 
   if (status === 'FINISHED') {
     return (
-      <div className="flex items-center justify-center flex-col p-8 h-full gap-4 text-center">
-        <div className="text-[var(--success)] w-32 h-32 rounded-full border-4 border-current flex items-center justify-center animate-in zoom-in spin-in-180">
-          <CheckCircle size={64} fill="currentColor" className="text-[var(--bg-primary)]" />
+      <div className="flex items-center flex-col p-6 h-full gap-4 pb-20 overflow-y-auto">
+        <div className="text-[var(--success)] w-24 h-24 mt-4 shrink-0 rounded-full border-4 border-current flex items-center justify-center animate-in zoom-in spin-in-180">
+          <CheckCircle size={48} fill="currentColor" className="text-[var(--bg-primary)]" />
         </div>
-        <h2 className="text-3xl font-black mt-4">{t('processFinished')}</h2>
-        <p className="opacity-75">{t('safelyOpen')}</p>
-        <button className="btn btn-secondary mt-8 w-full shadow-lg h-14" onClick={() => { reset(); navigate('/'); }}>{t('completeSave')}</button>
+        
+        <div className="text-center shrink-0">
+          <h2 className="text-3xl font-black tracking-tighter">{t('processFinished')}</h2>
+          <p className="opacity-75 text-sm mt-1">{t('safelyOpen')}</p>
+        </div>
+
+        <div className="w-full flex-1 flex flex-col gap-3 my-4">
+          <h3 className="font-bold border-b border-[var(--border)] pb-2 mb-2 text-sm text-[var(--accent)] uppercase tracking-wider">Post-Process Cleanup</h3>
+          
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-sm text-[var(--text-secondary)]">1. Wash & Rinse Film (Photo-Flo)</span>
+            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+              checked={postChecks[0]} onChange={(e) => setPostChecks([e.target.checked, postChecks[1], postChecks[2], postChecks[3]])} />
+          </label>
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-sm text-[var(--text-secondary)]">2. Squeegee & Hang correctly</span>
+            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+              checked={postChecks[1]} onChange={(e) => setPostChecks([postChecks[0], e.target.checked, postChecks[2], postChecks[3]])} />
+          </label>
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-sm text-[var(--text-secondary)]">3. Store/Dispose Used Chemicals</span>
+            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+              checked={postChecks[2]} onChange={(e) => setPostChecks([postChecks[0], postChecks[1], e.target.checked, postChecks[3]])} />
+          </label>
+          <label className="card flex items-center justify-between cursor-pointer border-[var(--border)] transition-colors">
+            <span className="font-medium text-sm text-[var(--text-secondary)]">4. Wash Reels, Tank, and Thermometer</span>
+            <input type="checkbox" className="w-8 h-8 rounded accent-[var(--success)]" 
+              checked={postChecks[3]} onChange={(e) => setPostChecks([postChecks[0], postChecks[1], postChecks[2], e.target.checked])} />
+          </label>
+        </div>
+
+        <button 
+          disabled={!postChecks.every(Boolean)}
+          className="btn btn-secondary mt-auto w-full shadow-lg h-16 text-lg disabled:opacity-50 disabled:bg-[var(--bg-secondary)]" 
+          onClick={() => { reset(); navigate('/'); }}
+        >
+          {t('completeSave')}
+        </button>
       </div>
     );
   }
