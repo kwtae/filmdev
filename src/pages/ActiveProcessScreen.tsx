@@ -292,31 +292,7 @@ export default function ActiveProcessScreen() {
   return (
     <div className="relative flex flex-col h-full bg-[var(--bg-primary)] select-none">
       
-      {/* Massive Visual Play/Pause Overlay Hitbox */}
-      <div 
-        className="absolute inset-0 z-30 touch-none flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer group"
-        onClick={handleAreaTap}
-        aria-label="Play or Pause Space"
-      >
-        {status === 'RUNNING' && <Pause size={120} className="text-[var(--text-primary)] opacity-5 p-4 rounded-full border-4 border-current" />}
-      </div>
-
-      {status === 'PAUSED' && (
-        <div 
-          className="absolute inset-0 z-40 bg-black/80 flex flex-col items-center justify-center cursor-pointer pointer-events-auto backdrop-blur-sm transition-all"
-          onClick={handleAreaTap}
-        >
-          <div className="bg-[var(--danger)] p-8 rounded-full animate-bounce shadow-[0_0_40px_var(--danger)] mt-20">
-             <Play size={80} fill="white" className="text-white ml-2" />
-          </div>
-          <h2 className="text-5xl font-black text-white mt-12 tracking-tighter uppercase px-2 py-4 border-y-4 border-[var(--danger)]">Paused</h2>
-          <p className="text-white/70 mt-4 text-center text-sm font-bold uppercase tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/20">
-            탭하여 다시 시작<br/>(Tap to Resume)
-          </p>
-        </div>
-      )}
-
-      <div className="flex flex-col flex-1 pb-16 justify-between text-center relative pointer-events-none z-20">
+      <div className="flex flex-col flex-1 pb-16 justify-between text-center relative z-20">
         
         {/* Top Header & Skip Action */}
         <div className="pt-6 px-4 flex justify-between items-start pointer-events-auto">
@@ -332,10 +308,30 @@ export default function ActiveProcessScreen() {
            </button>
         </div>
 
-        <div className="w-full relative flex items-center justify-center py-6 sm:py-12 bg-[var(--bg-secondary)] border-y border-[var(--border)] font-mono drop-shadow-2xl">
-          <span className="text-[25vw] sm:text-[12rem] leading-none font-black tracking-tighter text-[var(--text-primary)]">
+        <div className="w-full relative flex flex-col items-center justify-center py-6 sm:py-12 bg-[var(--bg-secondary)] border-y border-[var(--border)] font-mono drop-shadow-2xl">
+          <span className={`text-[25vw] sm:text-[12rem] leading-none font-black tracking-tighter transition-all ${status === 'PAUSED' ? 'text-[var(--danger)] animate-pulse opacity-80' : 'text-[var(--text-primary)]'}`}>
             {mins}:{secs}
           </span>
+          
+          <div className="flex justify-center mt-6 h-24 items-center w-full">
+             {status === 'RUNNING' ? (
+                <button 
+                  onClick={handleAreaTap} 
+                  className="bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--danger)] rounded-full w-20 h-20 flex flex-col items-center justify-center shadow-[0_0_20px_var(--danger)] active:scale-95 transition-all"
+                >
+                   <Pause size={32} />
+                   <span className="text-[10px] font-bold mt-1 uppercase">Pause</span>
+                </button>
+             ) : (
+                <button 
+                  onClick={handleAreaTap} 
+                  className="bg-[var(--danger)] text-white rounded-full w-24 h-24 flex flex-col items-center justify-center shadow-[0_0_40px_var(--danger)] animate-pulse active:scale-95 transition-all"
+                >
+                   <Play size={40} className="ml-1" />
+                   <span className="text-xs font-bold mt-1 uppercase tracking-widest">Resume</span>
+                </button>
+             )}
+          </div>
         </div>
 
         <div className="flex flex-col items-center justify-center p-4">
