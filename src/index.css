@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-s-black: #000000;
+  --color-s-red-900: #450a0a;
+  --color-s-red-600: #dc2626;
+  --color-s-red-500: #ef4444;
+  --color-s-red-400: #f87171;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --border: #27272a;
+    --success: #22c55e;
+  }
+
+  /* Safelight (Red) Mode for Darkroom Working */
+  .theme-safelight {
+    --bg-primary: var(--color-s-black);
+    --bg-secondary: var(--color-s-red-900);
+    --text-primary: var(--color-s-red-500);
+    --text-secondary: var(--color-s-red-600);
+    --accent: var(--color-s-red-500);
+    --accent-hover: var(--color-s-red-400);
+    --danger: var(--color-s-red-600);
+    --danger-hover: var(--color-s-red-500);
+    --border: var(--color-s-red-900);
+    --success: var(--color-s-red-500);
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* Touch action rules out pinch zoom during sweaty/wet glove operation */
+    touch-action: pan-y; 
+    overscroll-behavior-y: none;
+  }
+}
+
+@layer components {
+  /* Common large touch targets for darkroom use */
+  .btn {
+    @apply px-4 py-4 rounded-xl font-bold flex items-center justify-center transition-colors shadow-sm active:scale-95 touch-manipulation;
+  }
+  .btn-primary {
+    background-color: var(--accent);
+    color: var(--bg-primary);
+  }
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+  .btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-danger {
+    background-color: var(--danger);
+    color: #fff;
+  }
+  
+  .card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    @apply rounded-2xl p-4;
+  }
+}
