@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/db';
-import { ScrollText, Calendar, Trash2, ImagePlus, X, Maximimize, FileImage } from 'lucide-react';
+import { ScrollText, Calendar, Trash2, ImagePlus, X, FileImage } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 export default function LogbookScreen() {
