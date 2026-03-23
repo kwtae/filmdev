@@ -27,6 +27,7 @@ export interface DevLog {
   recipe_name: string;
   actual_temp_c: number | null;
   notes: string;
+  scans?: string[]; // Base64 encoded WebP/JPEG images
 }
 
 export class FilmDevDB extends Dexie {
